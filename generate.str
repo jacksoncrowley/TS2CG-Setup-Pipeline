@@ -1,0 +1,12 @@
+[Lipids List]
+Domain 0
+DOPC     0.98     0.98     0.68
+TO	 0.02     0.02     0.68
+End
+
+[Shape Data]
+ShapeType Cylinder
+Box 45 46 112.5
+Thickness 2
+Radius 12
+End
