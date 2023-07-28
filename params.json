@@ -1,4 +1,6 @@
 {
     "in": "/data1/jackson/TS2CG_pipeline/generate.str",
-    "em1": "/data1/jackson/TS2CG_pipeline/mdp/em1.mdp"
+    "em1": "/data1/jackson/TS2CG_pipeline/mdp/em1.mdp",
+    "em2": "/data1/jackson/TS2CG_pipeline/mdp/em2.mdp",
+    "top_header": "/data1/jackson/TS2CG_pipeline/top/header.txt"
 }

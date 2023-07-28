@@ -1,0 +1,130 @@
+;;;;; MARTINI 3.0 - Triglycerides
+;;;;; 
+;;;;; Triolein 
+;;;;; TO
+;;;;; 
+
+;;;;; BEAD-INDEX MAPPING
+;;;;; topology description
+;
+; GL1-C1A-D2A-C3A-C4A    1-2-3-4-5
+; |                      |
+; GL2-C1B-D2B-C3B-C4B    6-7-8-9-10
+; |                      | 
+; GL3-C1C-D2C-C3C-C4C    11-12-13-14-15
+;
+
+[moleculetype]
+TO 	1
+
+[atoms]
+; id type   resnr     residu   atom    cgnr charge
+1   SN4a 	1 	TO 	GL1 	1  	0 	58
+2   C1  	1 	TO 	C1A 	2  	0 	70 ; 5-1 mapping
+3   C4h 	1 	TO 	D2A 	3  	0 	54
+4   C1  	1 	TO 	C3A 	4  	0 	56
+5   C1  	1 	TO 	C4A 	5  	0 	57
+6   SN4a 	1 	TO 	GL2 	6  	0 	58 
+7   C1  	1 	TO 	C1B 	7  	0 	70 ; 5-1 mapping
+8   C4h 	1 	TO 	D2B 	8  	0 	54
+9   C1  	1 	TO 	C3B 	9  	0 	56
+10  C1  	1 	TO 	C4B 	10 	0 	57
+11  SN4a 	1 	TO 	GL3 	11 	0 	58
+12  C1  	1 	TO 	C1C 	12 	0 	70 ; 5-1 mapping
+13  C4h 	1 	TO 	D2C 	13 	0 	54
+14  C1  	1 	TO 	C3C 	14 	0 	56
+15  C1  	1 	TO 	C4C 	15 	0 	57
+		
+[bonds]
+; i j funct length force.c.
+1 6 	1 	0.34 	2100 ; backbone
+6 11 	1       0.34    2100 ; backbone 
+1 2 	1       0.470   2400 ; b_SN4_C1_glyc_5long     ; glycerol+ester bead to hydrocarbon tail
+2 3 	1      0.500    2800 ; b_C1_C4_mid_5long ; represents 5 atoms => longer bond
+3 4 	1      0.465    2800 ; b_C1_C4_mid
+4 5 	1      0.495    2800 ; b_C1_C1_end
+6 7 	1       0.470   2400
+7 8 	1      0.500    2800 ; b_C1_C4_mid_5long
+8 9 	1      0.465    2800 ; b_C1_C4_mid
+9 10	1      0.495    2800 ; b_C1_C1_end
+11 12 	1       0.470   2400
+12 13 	1      0.500    2800 ; b_C1_C4_mid_5long
+13 14	1      0.465    2800 ; b_C1_C4_mid
+14 15	1      0.495    2800 ; b_C1_C1_end
+
+[angles]
+; i j k  
+ 1  6 11	1       75      80 ; a_N4_N4_N4_glyc  ; backbone angle
+ 2  1  6	1       120     20 ; a_N4_N4_C_glyc   ; backbone to tail 1
+12 11  6	1       120     20 ; a_N4_N4_C_glyc   ; backbone to tail 3
+ 7  6  1	1       120     20 ; a_N4_N4_C_glyc   ; backbone to tail 2
+ 7  6 11	1       120     20 ; a_N4_N4_C_glyc   ; backbone to tail 2
+; tails attached to glycerol
+ 1  2  3 	1       180     12  ; a_N4_C1_C1_glyc ; tail 1
+ 2  3  4 	1      135       8  ; a_C1_C4_C1_cbt ; cis double bond
+ 3  4  5 	1      170      10  ; a_C1_C1_C4_cbt
+ 6  7  8 	1       180     12  ; a_N4_C1_C1_glyc ; tail 2
+ 7  8  9 	1      135       8  ; a_C1_C4_C1_cbt ; cis double bond
+ 8  9 10 	1      170      10  ; a_C1_C1_C4_cbt
+11 12 13 	1       180     12  ; a_N4_C1_C1_glyc ; tail 3
+12 13 14 	1      135       8  ; a_C1_C4_C1_cbt ; cis double bond
+13 14 15  	1      170      10  ;_C1_C1_C4_cbt
+
+[exclusions]
+1 11
+
+[ pairs ]
+1 11  1  3.400000e-01    1.770000e+00  ;sigma, epsilon for TN4a-TN4a interaction
+
+
+#ifdef POSRES_TO
+; Flat-bottomed position restraint for each TO
+[ position_restraints ]
+; numatoms  functype  g   r   k
+;                       (nm) (kJ mol−1nm−2)
+       01      2      7  -3.75   5000
+       02      2      7  -3.75   5000
+       03      2      7  -3.75   5000
+       04      2      7  -3.75   5000
+       05      2      7  -3.75   5000
+       06      2      7  -3.75   5000
+       07      2      7  -3.75   5000
+       08      2      7  -3.75   5000
+       09      2      7  -3.75   5000
+       10      2      7  -3.75   5000
+       11      2      7  -3.75   5000
+       12      2      7  -3.75   5000
+       13      2      7  -3.75   5000
+       14      2      7  -3.75   5000
+       15      2      7  -3.75   5000
+       01      2      8  -3.75   5000
+       02      2      8  -3.75   5000
+       03      2      8  -3.75   5000
+       04      2      8  -3.75   5000
+       05      2      8  -3.75   5000
+       06      2      8  -3.75   5000
+       07      2      8  -3.75   5000
+       08      2      8  -3.75   5000
+       09      2      8  -3.75   5000
+       10      2      8  -3.75   5000
+       11      2      8  -3.75   5000
+       12      2      8  -3.75   5000
+       13      2      8  -3.75   5000
+       14      2      8  -3.75   5000
+       15      2      8  -3.75   5000
+;      01      2      4  18.5    1000
+;      02      2      4  18.5    1000
+;      03      2      4  18.5    1000
+;      04      2      4  18.5    1000
+;      05      2      4  18.5    1000
+;      06      2      4  18.5    1000
+;      07      2      4  18.5    1000
+;      08      2      4  18.5    1000
+;      09      2      4  18.5    1000
+;      10      2      4  18.5    1000
+;      11      2      4  18.5    1000
+;      12      2      4  18.5    1000
+;      13      2      4  18.5    1000
+;      14      2      4  18.5    1000
+;      15      2      4  18.5    1000
+#endif

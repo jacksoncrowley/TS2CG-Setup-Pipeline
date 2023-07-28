@@ -1,5 +1,8 @@
 #!/usr/bin/env nextflow
 
+params.cores = 24
+
+
 workflow {
 
     // run TS2CG

@@ -6,7 +6,7 @@ End
 
 [Shape Data]
 ShapeType Cylinder
-Box 45 46 112.5
+Box 75 50 75
 Thickness 2
-Radius 12
+Radius 18
 End
