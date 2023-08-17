@@ -2,6 +2,9 @@
  * run equilibration
  */
 process eq{
+    // publishDir "results/setup", mode:"copy"
+    cpus = params.cores
+
     input:
     path "input.gro"
     path "input.top"
@@ -12,6 +15,6 @@ process eq{
 
     """
     gmx grompp -c input.gro -p input.top -f eq.mdp -o eq.tpr -maxwarn 1
-    gmx mdrun -s eq.tpr -c eq.gro -nt 24 
+    gmx mdrun -s eq.tpr -c eq.gro -nt ${task.cpus} 
     """
 }

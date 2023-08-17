@@ -1,10 +1,23 @@
 #!/usr/bin/env nextflow
 
+// paths to required input files
+params.in = "$baseDir/generate.str"
+params.em1 = "$baseDir/mdp/em1.mdp"
+params.em2 = "$baseDir/mdp/em2.mdp"
+params.eq1 = "$baseDir/mdp/eq1.mdp"
+params.top_header = "$baseDir/top/header.txt"
+params.water = "$baseDir/top/water.gro"
+
+// number of processes to be used by energy minimization and equilibration
+params.cores = 16
+
+// import modules
 include { runTS2CG } from './modules/runts2cg.nf'
 include { rotate } from './modules/rotate.nf'
 include { em; em as em2; em as em3 } from './modules/em.nf'
 include { eq; eq as eq2 } from './modules/eq.nf'
 include { solvate } from './modules/solvate.nf'
+
 
 workflow {
     // run TS2CG
