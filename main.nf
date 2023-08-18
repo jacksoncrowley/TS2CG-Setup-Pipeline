@@ -2,55 +2,65 @@
 
 // paths to required input files
 params.in = "$baseDir/generate.str"
+params.outDir = "$baseDir/results"
 params.em1 = "$baseDir/mdp/em1.mdp"
 params.em2 = "$baseDir/mdp/em2.mdp"
 params.eq1 = "$baseDir/mdp/eq1.mdp"
 params.top_header = "$baseDir/top/header.txt"
-params.rotate = [0, 0, 0]
+
+
+// take rotate parameters as string, convert to list
+params.rotate = "0,0,0"
+params.rotatelist = params.rotate.split(',').collect { it.toInteger() }
 
 // number of processes to be used by energy minimization and equilibration
 params.cores = 16
 
 // import modules
-include { runTS2CG } from './modules/runts2cg.nf'
-include { rotate } from './modules/rotate.nf'
-include { em; em as em2; em as em3 } from './modules/em.nf'
-include { eq; eq as eq2 } from './modules/eq.nf'
-include { solvate } from './modules/solvate.nf'
+include { RUNTS2CG } from './modules/runts2cg.nf'
+include { ROTATE } from './modules/rotate.nf'
+include { EM; EM as EM2; EM as EM3 } from './modules/em.nf'
+include { EQ; EQ as EQ2 } from './modules/eq.nf'
+include { SOLVATE } from './modules/solvate.nf'
+include { MAKEINDEX } from './modules/make_index.nf'
 
 
 workflow {
     // run TS2CG
-    runTS2CG(params.in, params.top_header)
+    RUNTS2CG(params.in, params.top_header)
 
     // Rotate TS2CG output, if necessary
-    if ( params.rotate != [0, 0, 0] ) {
-    // ensure the provided list is 3 elements of integers between 0 and 360
-    assert params.rotate.size() == 3 && params.rotate.every { it in 0..360 }
-    // convert the list to a string, then pass the string to the rotate process
-    rotate_str = params.rotate.join(" ")
-    rotate(runTS2CG.out.output_gro, rotate_str)
-    // run em #1 on the rotated file
-    em(rotate.out.rotated_gro, runTS2CG.out.system_top, params.em1)
+    if ( params.rotatelist != [0, 0, 0] ) {
+        // ensure the provided list is 3 elements of integers between 0 and 360
+        assert params.rotatelist.size() == 3 && params.rotatelist.every { it in 0..360 }
+        // convert the list to a string, then pass the string to the rotate process
+        rotate_str = params.rotatelist.join(" ")
+        ROTATE(RUNTS2CG.out.output_gro, rotate_str)
+        // run EM #1 on the rotated file
+        EM(ROTATE.out.rotated_gro, RUNTS2CG.out.system_top, params.em1)
     } 
     else {
-    // run em #1 on the TS2CG output
-    em(runTS2CG.out.output_gro, runTS2CG.out.system_top, params.em1)  
+        // run EM #1 on the TS2CG output
+        EM(RUNTS2CG.out.output_gro, RUNTS2CG.out.system_top, params.em1)  
     }
  
-    // run em #2 
-    em2(em.out.em_gro, runTS2CG.out.system_top, params.em2)
+    // run EM #2 
+    EM2(EM.out.em_gro, RUNTS2CG.out.system_top, params.em2)
 
-    // run eq #1
-    eq(em2.out.em_gro, runTS2CG.out.system_top, params.eq1)
+    // run EQ #1
+    EQ(EM2.out.em_gro, RUNTS2CG.out.system_top, params.eq1)
 
     // solvate
-    solvate(eq.out.eq_gro, runTS2CG.out.system_top)
+    SOLVATE(EQ.out.eq_gro, RUNTS2CG.out.system_top)
 
-    // run em #3
-    em3(solvate.out.solvated_gro, solvate.out.topol, params.em2)
+    // create index of System, Solvent, Solute
+    MAKEINDEX(SOLVATE.out.solvated_gro)
+
+    // run EM #3
+    EM3(SOLVATE.out.solvated_gro, SOLVATE.out.topol, params.em2)
 
     // run eq #2
-    eq2(em3.out.em_gro, solvate.out.topol, params.eq1)
-    view
+    EQ2(EM3.out.em_gro, SOLVATE.out.topol, params.eq1)
+    
+ 
 }

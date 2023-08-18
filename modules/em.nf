@@ -1,7 +1,7 @@
 /*
  * run energy minimisation
  */
-process em{
+process EM{
     // publishDir "results/setup", mode:"copy"
     cpus = params.cores
 

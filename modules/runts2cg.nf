@@ -1,8 +1,7 @@
 /*
  * Run TS2CG on input file
  */
-process runTS2CG {
-    publishDir "results/setup", mode:"copy"
+process RUNTS2CG {
     input:
     path input
     path top_header

@@ -1,7 +1,7 @@
 /*
  * rotate a gro file
  */
-process rotate{
+process ROTATE{
     publishDir "results/setup", mode:"copy"
     input:
     path "input.gro"

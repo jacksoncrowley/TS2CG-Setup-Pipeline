@@ -1,7 +1,8 @@
 /*
  * make a solute/solvent index file
  */
-process make_index{
+process MAKEINDEX{
+    publishDir "${params.outDir}", mode:"copy"
     input:
     path "input.gro"
 
@@ -9,8 +10,6 @@ process make_index{
     path "index.ndx", emit: index
 
     """
-    gmx make_ndx -f input.gro
+    echo -e "del 1-99\na W NA CL CA\n0 & ! 1\nname 1 Solvent\nname 2 Solute\nq" | gmx make_ndx -f input.gro
     """
-
-
 }

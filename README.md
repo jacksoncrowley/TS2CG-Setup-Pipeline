@@ -15,14 +15,27 @@ Within "main.nf", the following variables are defined:
 
 ~~~
 params.in = "$baseDir/generate.str"
+params.outDir = "$baseDir/results"
 params.em1 = "$baseDir/mdp/em1.mdp"
 params.em2 = "$baseDir/mdp/em2.mdp"
 params.eq1 = "$baseDir/mdp/eq1.mdp"
 params.top_header = "$baseDir/top/header.txt"
-params.rotate = [0, 0, 0]
 ~~~
 
 At a minimum, the user needs only to change the content of, and perhaps the name of generate.str; the PCG input file for generation of the structure.
+
+Providing an writeout directory via the command line can be done by the --outDir argument. In Nextflow, the absolute path must be provided.
+
+Using the argument --rotate, users can specify an optional rotation of the system by providing the argument as degrees in the format
+
+~~~
+--rotate x,y,z
+~~~
+in practice;
+~~~
+--rotate 0,90,0
+~~~
+To rotate the system by 90 degrees in y.
 
 Next most likely would be the file "top/header.txt", which is simply the #include statements for the gromacs .itp files to be added to the top of the .top file produced by TS2CG. Indeed, there is a smarter way to do this; expect in a future minor update.
 

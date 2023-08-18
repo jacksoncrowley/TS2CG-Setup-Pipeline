@@ -1,8 +1,8 @@
 /*
  * run equilibration
  */
-process eq{
-    // publishDir "results/setup", mode:"copy"
+process EQ{
+    publishDir "${params.outDir}", mode:"copy"
     cpus = params.cores
 
     input:
