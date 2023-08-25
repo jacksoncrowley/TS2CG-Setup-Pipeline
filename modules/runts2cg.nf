@@ -3,6 +3,7 @@
  */
 process RUNTS2CG {
     input:
+    path pcg
     path input
     path top_header
 
@@ -11,7 +12,7 @@ process RUNTS2CG {
     path "system.top", emit: system_top
 
     """
-    PCG -str ${input} -Bondlength  0.2  -LLIB ${baseDir}/top/Martini3+NLs.LIB -function  analytical_shape
+    ${pcg} -str ${input} -Bondlength  0.2  -LLIB ${baseDir}/top/Martini3+NLs.LIB -function  analytical_shape
     rm pcg.log
 
     cat ${top_header} > system.top

@@ -1,12 +1,13 @@
 #!/usr/bin/env nextflow
 
 // paths to required input files
-params.in = "$baseDir/generate.str"
-params.outDir = "$baseDir/results"
-params.em1 = "$baseDir/mdp/em1.mdp"
-params.em2 = "$baseDir/mdp/em2.mdp"
-params.eq1 = "$baseDir/mdp/eq1.mdp"
-params.top_header = "$baseDir/top/header.txt"
+params.pcg          = "$baseDir/PCG"            // PCG from TS2CG
+params.in           = "$baseDir/generate.str"   // input .str file
+params.outDir       = "$baseDir/results"
+params.em1          = "$baseDir/mdp/em1.mdp"
+params.em2          = "$baseDir/mdp/em2.mdp"
+params.eq1          = "$baseDir/mdp/eq1.mdp"
+params.top_header   = "$baseDir/top/header.txt" // file listing .itps in order
 
 
 // take rotate parameters as string, convert to list
@@ -27,7 +28,7 @@ include { MAKEINDEX } from './modules/make_index.nf'
 
 workflow {
     // run TS2CG
-    RUNTS2CG(params.in, params.top_header)
+    RUNTS2CG(params.pcg, params.in, params.top_header)
 
     // Rotate TS2CG output, if necessary
     if ( params.rotatelist != [0, 0, 0] ) {

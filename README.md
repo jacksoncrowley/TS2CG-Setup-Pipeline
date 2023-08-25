@@ -8,7 +8,7 @@ More specifically, the program takes a .str file for the membrane builder progra
 ### Prerequisites
 - Gromacs
 - Nextflow
-- [TS2CG PCG program](https://github.com/marrink-lab/TS2CG1.1/blob/master/PCG) **in your $PATH directory**
+- [TS2CG PCG program](https://github.com/marrink-lab/TS2CG1.1/blob/master/PCG) (included by default in base directory)
 
 ## Usage
 Within "main.nf", the following variables are defined:

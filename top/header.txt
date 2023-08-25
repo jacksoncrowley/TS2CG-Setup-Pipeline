@@ -4,3 +4,4 @@
 #include "/data1/jackson/TS2CG_pipeline/top/martini_v3.0.0_solvents_v1.itp"
 #include "/data1/jackson/TS2CG_pipeline/top/martini_v3.0.0_ions_v1.itp"
 #include "/data1/jackson/TS2CG_pipeline/top/martini_v3.0_TO_M3_mod2_v16_[Restrained].itp"
+#include "/data1/jackson/TS2CG_pipeline/top/martini_v3.0_DO_[Restrained].itp"

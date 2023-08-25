@@ -614,7 +614,8 @@
  
 [ angles ]
 ; i  j  k  funct  angle  force
-  5  9  10  10     120.0   150
+  5  9  10  2     120.0   150
+;  5  9  10  10     120.0   150  # not supported for em with soft-core potentials.
 
 [ exclusions ]
 ; i  j  k  ...
