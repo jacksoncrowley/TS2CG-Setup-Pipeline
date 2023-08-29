@@ -9,16 +9,27 @@ params.em2          = "$baseDir/mdp/em2.mdp"
 params.eq1          = "$baseDir/mdp/eq1.mdp"
 params.top_header   = "$baseDir/top/header.txt" // file listing .itps in order
 
+// pore formation parameters
+params.createporego = "$baseDir/scripts/create_pore.go"
+params.poreradius   = 0
+params.poreaxis     = "z"
+//params.poreopen   = false
+
+params.buildtop_python = "$baseDir/scripts/build_top.py"
+
 
 // take rotate parameters as string, convert to list
 params.rotate = "0,0,0"
 params.rotatelist = params.rotate.split(',').collect { it.toInteger() }
+
 
 // number of processes to be used by energy minimization and equilibration
 params.cores = 16
 
 // import modules
 include { RUNTS2CG } from './modules/runts2cg.nf'
+include { CREATEPORE} from './modules/create_pore.nf'
+include { BUILDTOP } from './modules/build_top.nf'
 include { ROTATE } from './modules/rotate.nf'
 include { EM; EM as EM2; EM as EM3 } from './modules/em.nf'
 include { EQ; EQ as EQ2 } from './modules/eq.nf'
@@ -29,6 +40,18 @@ include { MAKEINDEX } from './modules/make_index.nf'
 workflow {
     // run TS2CG
     RUNTS2CG(params.pcg, params.in, params.top_header)
+    working_gro = RUNTS2CG.out.output_gro
+    working_top = RUNTS2CG.out.system_top
+
+    // add pore for water EQ if needed (Vesicles)
+    if ( params.poreradius != 0 ) {
+        CREATEPORE(params.createporego, RUNTS2CG.out.output_gro, params.poreradius, params.poreaxis)
+        working_gro = CREATEPORE.out.pore_gro
+
+        BUILDTOP(params.buildtop_python, working_gro, working_top)
+        working_top = BUILDTOP.out.output_top
+    }
+    // update topology
 
     // Rotate TS2CG output, if necessary
     if ( params.rotatelist != [0, 0, 0] ) {
@@ -36,23 +59,23 @@ workflow {
         assert params.rotatelist.size() == 3 && params.rotatelist.every { it in 0..360 }
         // convert the list to a string, then pass the string to the rotate process
         rotate_str = params.rotatelist.join(" ")
-        ROTATE(RUNTS2CG.out.output_gro, rotate_str)
+        ROTATE(working_gro, rotate_str)
         // run EM #1 on the rotated file
-        EM(ROTATE.out.rotated_gro, RUNTS2CG.out.system_top, params.em1)
+        EM(working_gro, working_top, params.em1)
     } 
     else {
         // run EM #1 on the TS2CG output
-        EM(RUNTS2CG.out.output_gro, RUNTS2CG.out.system_top, params.em1)  
+        EM(working_gro, working_top, params.em1)  
     }
  
     // run EM #2 
-    EM2(EM.out.em_gro, RUNTS2CG.out.system_top, params.em2)
+    EM2(EM.out.em_gro, working_top, params.em2)
 
     // run EQ #1
-    EQ(EM2.out.em_gro, RUNTS2CG.out.system_top, params.eq1)
+    EQ(EM2.out.em_gro, working_top, params.eq1)
 
     // solvate
-    SOLVATE(EQ.out.eq_gro, RUNTS2CG.out.system_top)
+    SOLVATE(EQ.out.eq_gro, working_top)
 
     // create index of System, Solvent, Solute
     MAKEINDEX(SOLVATE.out.solvated_gro)

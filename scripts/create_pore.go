@@ -70,17 +70,15 @@ func stringInSlice(a string, list []string) bool {
 
 
 func parseGroLine(line string) (atomName, atomType string, x, y, z float64) {
-	// Assuming atom name is in positions 0-4, atom type in positions 5-10,
-	// residue name in positions 10-15, and x, y, z coordinates in positions 20-45
-	atomName = strings.TrimSpace(line[0:5])
-	atomType = strings.TrimSpace(line[5:10])
+	atomName = line[0:5]
+	atomType = line[5:10]
 	x, _ = strconv.ParseFloat(strings.TrimSpace(line[20:28]), 64)
 	y, _ = strconv.ParseFloat(strings.TrimSpace(line[28:36]), 64)
 	z, _ = strconv.ParseFloat(strings.TrimSpace(line[36:44]), 64)
 	return atomName, atomType,  x, y, z
 }
 
-func formPore(inputFilePath string, axis string, center1 float64, center2 float64, radius float64, molecules []string) (int, error) {
+func formPore(inputFilePath string, outputFilePath string, axis string, center1 float64, center2 float64, radius float64, molecules []string) (int, error) {
 
 	// Read the input GROMACS gro file
 	file, err := os.Open(inputFilePath)
@@ -154,15 +152,13 @@ func formPore(inputFilePath string, axis string, center1 float64, center2 float6
 			if shouldRemove(resid, molecules) && isWithinCircle(dim1, dim2, boxDims) {
 				if stringInSlice(resid, molsToRemove) == false {
 					molsToRemove = append(molsToRemove, resid)
-					fmt.Printf("Removing molecule %s\n", resid)
+					fmt.Printf("One or more atoms of molecule %s falls within pore radius, molecule will be deleted.\n", resid)
+					// fmt.Printf("Removing molecule %s\n", resid)
 					removedMolecules++
 				} 
 			}
 
-			if stringInSlice(resid, molsToRemove) == false {
-				currentMoleculeLines = append(currentMoleculeLines, line)
-				// println(currentMoleculeLines[lineCount])
-			}
+			currentMoleculeLines = append(currentMoleculeLines, line)
 
 			lineCount++
 
@@ -173,18 +169,22 @@ func formPore(inputFilePath string, axis string, center1 float64, center2 float6
 		return 0, err
 	}
 
-	fmt.Println(molsToRemove)
     // Prepare the lines to write back to the output file
     lines = append(lines, firstLine)                     // Add the first line from the original input file
     lines = append(lines, "")                            // Placeholder for the line count
-    lines = append(lines, currentMoleculeLines...)       // Add the current molecule lines
+	for _, line := range currentMoleculeLines {   		 // Add the current molecule lines
+		if !stringInSlice((line[:10]), molsToRemove) {  
+			lines = append(lines, line)
+		}
+	}
+    // lines = append(lines, currentMoleculeLines...)       // Add the current molecule lines
     lines = append(lines, lastLine)                      // Add the last line from the original input file
 
     // Calculate the line count after processing
     lines[1] = fmt.Sprintf("%d", len(lines)-3)
 
     // Write the updated gro file
-    outputFilePath := strings.TrimSuffix(inputFilePath, ".gro") + "_modified.gro"
+    // outputFilePath := strings.TrimSuffix(inputFilePath, ".gro") + "_modified.gro"
     outputFile, err := os.Create(outputFilePath)
     if err != nil {
         return 0, err
@@ -212,6 +212,7 @@ func contains(slice []string, element string) bool {
 
 func main() {
 	inputFilePath := flag.String("c", "", "Path to the input file")
+	outputFilePath := flag.String("o", strings.TrimSuffix(*inputFilePath, ".gro") + "_modified.gro", "Path to the output file")
 	axis := flag.String("axis", "z", "Axis to print values for (x, y, or z)")
 	poreRadius := flag.Float64("r", 1, "Pore radius as an integer")
 	poreCenter := flag.String("poreCenter", "", "Pore center coordinates (two floats separated by a comma)")
@@ -268,7 +269,7 @@ func main() {
 		}
 	}
 
-	removedMolecules, err := formPore(*inputFilePath, *axis, center1, center2, *poreRadius, []string{"DOPC"})
+	removedMolecules, err := formPore(*inputFilePath, *outputFilePath, *axis, center1, center2, *poreRadius, []string{""})
 	if err != nil {
 		fmt.Println("Error:", err)
 	} else {
