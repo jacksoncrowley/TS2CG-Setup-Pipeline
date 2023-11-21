@@ -8,7 +8,7 @@ process ROTATE{
     val rotate_str
 
     output:
-    path "rotated.gro", emit: rotated_gro
+    path "rotated.gro", emit: output_gro
 
     """
     gmx editconf -f input.gro -rotate ${rotate_str} -o rotated.gro

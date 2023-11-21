@@ -52,7 +52,7 @@ func boxVectors(inputFilePath string) ([3]float64, error) {
 
 func shouldRemove(moleculeName string, molecules []string) bool {
 	for _, molecule := range molecules {
-		if strings.HasSuffix(moleculeName, molecule) {
+		if strings.HasSuffix(strings.TrimSpace(moleculeName), molecule) {
 			return true
 		}
 	}
@@ -177,7 +177,6 @@ func formPore(inputFilePath string, outputFilePath string, axis string, center1 
 			lines = append(lines, line)
 		}
 	}
-    // lines = append(lines, currentMoleculeLines...)       // Add the current molecule lines
     lines = append(lines, lastLine)                      // Add the last line from the original input file
 
     // Calculate the line count after processing
@@ -196,7 +195,6 @@ func formPore(inputFilePath string, outputFilePath string, axis string, center1 
 		fmt.Fprintln(outputFile, line)
 	}
 	
-
     return removedMolecules, nil
 }
 
@@ -269,7 +267,7 @@ func main() {
 		}
 	}
 
-	removedMolecules, err := formPore(*inputFilePath, *outputFilePath, *axis, center1, center2, *poreRadius, []string{""})
+	removedMolecules, err := formPore(*inputFilePath, *outputFilePath, *axis, center1, center2, *poreRadius, []string{"DOPC"})
 	if err != nil {
 		fmt.Println("Error:", err)
 	} else {
