@@ -3,6 +3,8 @@ This is a basic pipeline for the program [TS2CG](https://github.com/marrink-lab/
 
 More specifically, the program takes a .str file for the membrane builder program, PCG, and performs the required energy minimisation, solvation and equilibration stages. For further information, see the [Martini 2021 Online Workshop Tutorial](http://cgmartini.nl/index.php/2021-martini-online-workshop/tutorials/558-9-ts2cg), starting at "Tut6: Fixed shapes".
 
+### Note: This is a branch designed for our lipid sorting project. View the main branch to see if other updates exist.
+
 ### Prerequisites
 - Gromacs
 - Nextflow
