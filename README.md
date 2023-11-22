@@ -3,8 +3,6 @@ This is a basic pipeline for the program [TS2CG](https://github.com/marrink-lab/
 
 More specifically, the program takes a .str file for the membrane builder program, PCG, and performs the required energy minimisation, solvation and equilibration stages. For further information, see the [Martini 2021 Online Workshop Tutorial](http://cgmartini.nl/index.php/2021-martini-online-workshop/tutorials/558-9-ts2cg), starting at "Tut6: Fixed shapes".
 
-**This workflow currently requires that you have the PCG program installed in your $PATH directory**
-
 ### Prerequisites
 - Gromacs
 - Nextflow
@@ -25,17 +23,6 @@ params.top_header = "$baseDir/top/header.txt"
 At a minimum, the user needs only to change the content of, and perhaps the name of generate.str; the PCG input file for generation of the structure.
 
 Providing an writeout directory via the command line can be done by the --outDir argument. In Nextflow, the absolute path must be provided.
-
-Using the argument --rotate, users can specify an optional rotation of the system by providing the argument as degrees in the format
-
-~~~
---rotate x,y,z
-~~~
-in practice;
-~~~
---rotate 0,90,0
-~~~
-To rotate the system by 90 degrees in y.
 
 Next most likely would be the file "top/header.txt", which is simply the #include statements for the gromacs .itp files to be added to the top of the .top file produced by TS2CG. Indeed, there is a smarter way to do this; expect in a future minor update.
 

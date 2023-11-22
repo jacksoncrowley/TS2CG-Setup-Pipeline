@@ -29,9 +29,6 @@ params.cores = 16
 
 // import modules
 include { RUNTS2CG } from './modules/runts2cg.nf'
-// include { ROTATE } from './modules/rotate.nf'
-// include { CREATEPORE} from './modules/create_pore.nf'
-// include { BUILDTOP } from './modules/build_top.nf'
 include { EM; EM as EM2; EM as EM3 } from './modules/em.nf'
 include { EQ; EQ as EQ2 } from './modules/eq.nf'
 include { SOLVATE } from './modules/solvate.nf'
@@ -43,29 +40,6 @@ workflow {
     RUNTS2CG(params.pcg, params.input, params.top_header)
     working_gro = RUNTS2CG.out.output_gro
     working_top = RUNTS2CG.out.system_top
-
-    // // Steps are not yet fully developed
-    // // Rotate TS2CG output, if necessary
-    // if ( params.rotatelist != [0, 0, 0] ) {
-    //     // ensure the provided list is 3 elements of integers between 0 and 360
-    //     assert params.rotatelist.size() == 3 && params.rotatelist.every { it in 0..360 }
-    //     // convert the list to a string, then pass the string to the rotate process
-    //     rotate_str = params.rotatelist.join(" ")
-    //     ROTATE(working_gro, rotate_str)
-    //     working_gro = ROTATE.out.output_gro   
-    // } 
-    
-
-    // // add pore for water EQ if needed (Vesicles)
-    // if ( params.poreradius != 0 ) {
-    //     CREATEPORE(params.createporego, working_gro, params.poreradius, params.poreaxis)
-    //     working_gro = CREATEPORE.out.pore_gro
-
-    //     // update topology
-    //     BUILDTOP(params.buildtop_python, working_gro, working_top)
-    //     working_top = BUILDTOP.out.output_top
-    // }
-
 
     // run EM #1
     EM(working_gro, working_top, params.em1)
