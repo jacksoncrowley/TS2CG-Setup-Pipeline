@@ -8,7 +8,7 @@ process SOLVATE{
     path "topol.top"
 
     output:
-    path "solvated.gro"
+    path "solvated.gro", emit: solvated_gro
     path "topol.top", emit: topol
 
     """
