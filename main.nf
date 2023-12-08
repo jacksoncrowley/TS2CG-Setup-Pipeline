@@ -2,27 +2,12 @@
 
 // paths to required input files
 params.pcg          = "$baseDir/PCG"            // PCG from TS2CG
-params.input        = "$baseDir/generate.str"   // input .str file
-params.outDir       = "$baseDir/results"
 params.em1          = "$baseDir/mdp/em1.mdp"
 params.em2          = "$baseDir/mdp/em2.mdp"
 params.eq1          = "$baseDir/mdp/eq1.mdp"
 params.top_header   = "$baseDir/top/header.txt" // file listing .itps in order
-
-// pore formation parameters
-params.createporego = "$baseDir/scripts/create_pore.go"
-params.poreradius   = 0
-params.poreaxis     = "z"
-//params.porecenter = "0,0"
-//params.poreopen   = false
-
-params.buildtop_python = "$baseDir/scripts/build_top.py"
-
-
-// take rotate parameters as string, convert to list
-params.rotate = "0,0,0"
-params.rotatelist = params.rotate.split(',').collect { it.toInteger() }
-
+params.input        = "$launchDir/generate.str"   // input .str file
+params.outDir       = "$launchDir/results"
 
 // number of processes to be used by energy minimization and equilibration
 params.cores = 16
@@ -61,5 +46,5 @@ workflow {
 
     // run eq #2
     EQ2(EM3.out.em_gro, SOLVATE.out.topol, params.eq1)
- 
+    
 }

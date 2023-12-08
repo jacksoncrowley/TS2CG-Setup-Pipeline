@@ -1,8 +1,8 @@
 /*
- * solvate (and neutralise?) AND generate new index files
+ * solvate 
  */
 process SOLVATE{
-    publishDir "${params.outDir}", mode:"copy"
+    publishDir "${params.outDir}", mode:"copy", pattern: "*.top"
     input:
     path "input.gro"
     path "topol.top"
