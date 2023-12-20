@@ -1,4 +1,4 @@
-define			 = -DFLEXIBLE
+define			 = -DFLEXIBLE -DSOFTCORE
 
 integrator               = steep
 nsteps                   = 500
