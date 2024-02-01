@@ -17,5 +17,8 @@ process RUNTS2CG {
 
     cat ${top_header} > system.top
     cat output.top >> system.top
+
+    echo ${baseDir}
+    sed -i 's:BASEDIR:${baseDir}:g' system.top
     """
 }
